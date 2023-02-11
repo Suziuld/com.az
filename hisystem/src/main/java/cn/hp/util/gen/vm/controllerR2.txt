@@ -1,0 +1,77 @@
+package ${packages}.controller;
+
+import java.util.List;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import ${packages}.entity.${tableName};
+import ${packages}.service.I${tableName}Service;
+import ${packages}.util.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
+
+/**
+ * ${remark}Controller
+ * /api
+ */
+@RestController
+@RequestMapping("/api/${tableName2}")
+public class ${tableName}Controller
+{
+    @Autowired
+    private I${tableName}Service ${tableName2}service;
+    /**
+     * 条件查询
+     */
+    @RequestMapping("/find")
+    public Object find(${tableName} obj) {
+        return Result.success(${tableName2}service.select${tableName}List(obj));
+    }
+    /**
+     * 条件+分页查询
+     */
+    @RequestMapping("/page")
+    public Object findPage(${tableName} obj,@RequestParam(value = "pageNum",defaultValue = "1")Integer page,
+                       @RequestParam(value = "pageSize",defaultValue = "10")Integer limit) {
+        PageInfo<${tableName}> pageInfo = ${tableName2}service.select${tableName}List(obj, page, limit);
+        return Result.success(pageInfo);
+    }
+
+    /**
+     * 查询指定信息
+     */
+    @RequestMapping("/findById")
+    public Object findById(Integer id) {
+        ${tableName} ${tableName2} = ${tableName2}service.select${tableName}ById(id);
+        return Result.success(${tableName2});
+    }
+    /**
+     * 添加
+     */
+    @RequestMapping("/add")
+    public Object add(${tableName} obj) {
+        int i = ${tableName2}service.insert${tableName}(obj);
+        return i>0?Result.success("添加成功！"):Result.error("添加失败！");
+    }
+
+    /**
+     * 修改
+     */
+    @RequestMapping("/upp")
+    public Object update(${tableName} obj) {
+        int i = ${tableName2}service.update${tableName}(obj);
+        return i>0?Result.success("修改成功！"):Result.error("修改失败！");
+    }
+    /**
+     * 删除
+     */
+    @RequestMapping("/del")
+    public Object del(Integer id) {
+        int i = ${tableName2}service.delete${tableName}ById(id);
+        return i>0?Result.success("删除成功！"):Result.error("删除失败！");
+    }
+
+}

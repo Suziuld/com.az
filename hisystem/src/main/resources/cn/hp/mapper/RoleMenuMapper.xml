@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hp.mapper.RoleMenuMapper">
+
+    <resultMap type="cn.hp.entity.RoleMenu" id="RoleMenuResult">
+        <result property="id" column="id"/>
+        <result property="roleId" column="role_id"/>
+        <result property="menuId" column="menu_id"/>
+
+    </resultMap>
+
+    <sql id="selectRoleMenuVo">
+        select * from role_menu
+    </sql>
+
+    <select id="selectRoleMenuList" parameterType="cn.hp.entity.RoleMenu" resultMap="RoleMenuResult">
+        <include refid="selectRoleMenuVo"/>
+        <!-- 根据搜索字段根据模板进行填添加 -->
+        <where>
+            menu_id >99
+            <if test="roleId != null  and roleId != ''"> and role_id = #{roleId}</if>
+        </where>
+
+    </select>
+
+    <select id="selectRoleMenuById" parameterType="Integer" resultMap="RoleMenuResult">
+        <include refid="selectRoleMenuVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertRoleMenu" parameterType="cn.hp.entity.RoleMenu" useGeneratedKeys="true" keyProperty="id">
+        <!-- 根据表字段进行自己添加 -->
+        insert into role_menu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="roleId != null">role_id,</if>
+            <if test="menuId != null">menu_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="roleId != null">#{roleId},</if>
+            <if test="menuId != null">#{menuId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateRoleMenu" parameterType="cn.hp.entity.RoleMenu">
+       <!-- 根据表字段进行自己添加 -->
+
+       update role_menu
+         <trim prefix="SET" suffixOverrides=",">
+            <if test="id != null ">id=#{id},</if>
+            <if test="roleId != null ">role_id=#{roleId},</if>
+            <if test="menuId != null ">menu_id=#{menuId},</if>
+
+        </trim>
+       where id = #{id}
+    </update>
+
+    <delete id="deleteRoleMenuById" parameterType="Integer">
+        delete from role_menu where id = #{id}
+    </delete>
+    <delete id="deleteRoleMenuByRoleId" parameterType="Integer">
+        delete from role_menu where role_id = #{roleId}
+    </delete>
+    <delete id="deleteRoleMenuByMenuId" parameterType="Integer">
+        delete from role_menu where menu_id = #{menuId}
+    </delete>
+
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${packages}.mapper.${tableName}Mapper">
+
+    <resultMap type="${packages}.entity.${tableName}" id="${tableName}Result">
+${resultMap}
+    </resultMap>
+
+    <sql id="select${tableName}Vo">
+        select * from ${table}
+    </sql>
+
+    <select id="select${tableName}List" parameterType="${packages}.entity.${tableName}" resultMap="${tableName}Result">
+        <include refid="select${tableName}Vo"/>
+        <!-- 根据搜索字段根据模板进行填添加 -->
+        <!--
+        <where>
+            <if test="userNo != null  and userNo != ''"> and userNo = #{userNo}</if>
+            <if test="doctorname != null  and doctorname != ''"> and doctorname like concat('%', #{doctorname}, '%')</if>
+        </where>
+        -->
+    </select>
+
+    <select id="select${tableName}ById" parameterType="Integer" resultMap="${tableName}Result">
+        <include refid="select${tableName}Vo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insert${tableName}" parameterType="${packages}.entity.${tableName}" useGeneratedKeys="true" keyProperty="id">
+        <!-- 根据表字段进行自己添加 -->
+
+        insert into ${table}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+${insert1}
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+${insert2}
+        </trim>
+
+    </insert>
+
+    <update id="update${tableName}" parameterType="${packages}.entity.${tableName}">
+       <!-- 根据表字段进行自己添加 -->
+
+       update ${table}
+         <trim prefix="SET" suffixOverrides=",">
+${update}
+        </trim>
+       where id = #{id}
+    </update>
+
+    <delete id="delete${tableName}ById" parameterType="Integer">
+        delete from ${table} where id = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>中因医院系统</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo"><img class="lowin-brand" src="/sb-admin-2/img/hospitalLogo.png"
+                                     style="width: 45px; height: 39px;" alt="logo">中因医院系统
+        </div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;" id="adminname">
+                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="/view/userInfo.html">个人中心</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="/logout">退出登录</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree layui-nav-side" id="menu" style="margin-top: 55px;" lay-filter="treenav">
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-tab layui-tab-brief" lay-filter="contentnav" lay-allowClose="true"
+         style="margin-left:200px;margin-top:55px;">
+        <ul class="layui-tab-title">
+            <li class="layui-this">首页</li>
+        </ul>
+        <ul class="layui-bg-green rightmenu" style="display: none;position: absolute;">
+            <li data-type="closethis">关闭当前</li>
+            <li data-type="closeall">关闭所有</li>
+        </ul>
+        <div class="layui-tab-content" style="padding:0;">
+            <div class="layui-tab-item layui-show">
+                <iframe data-frameid="2" scrolling="auto" frameborder="0" src="/view/main2.html"
+                        style="width: 100%; height: 680px;"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-footer" style="height:30px;">
+        <!-- 底部固定区域 -->
+        © layui.com - 底部固定区域
+    </div>
+</div>
+<script src="/layui/layui.js"></script>
+<script>
+    //JavaScript代码区域
+    layui.use(['element', 'jquery'], function () {
+        var element = layui.element;
+        var $ = layui.jquery;
+        $.get('/getUser', function (res) {
+            $("#adminname").append(res.data.username);
+        });
+        $.ajax({
+            url: "/getUidMenu",
+            type: "get",
+            dataType: "json",
+            success: function (res) {
+                // console.log(res);
+                if (res.status == 1) {
+                    $.each(res.data, function (i, obj) {
+                        if (obj.menuType == "M") {
+                            $("#menu").append('<li class="layui-nav-item">\n' +
+                                '\t\t\t<a href="javascript:;">\n' +
+                                obj.menuName +
+                                '\t\t\t</a>\n' +
+                                '\t\t\t<dl class="layui-nav-child" id = "M' + obj.menuId + '">\n' +
+                                '\t\t\t</dl>\n' +
+                                '\t\t</li>'
+                            );
+                        }else if (obj.menuType == "C"){
+                            $("#M"+obj.parentId).append('<dd class="layui-nav-item">'+
+                                '<a href="javascript:;" class="site-url" data-title="'+obj.menuName+ '"' +
+                                ' data-id="'+i+ '"' +/*obj.orderNum*/
+                                ' data-url="'+obj.url+'">'+
+                                obj.menuName+'</a></dd>'
+                            );
+                        }
+                    });
+                    //从新加载
+                    element.render();
+                }
+            }
+        });
+        var active = {
+            tabAdd: function (url, id, name) {
+                element.tabAdd('contentnav', {
+                    title: name,
+                    content: '<iframe data-frameid="' + id +
+                        '" scrolling="auto" frameborder="0" src="' + url +
+                        '" style="width:100%;"></iframe>',
+                    id: id
+                });
+                rightMenu();
+                iframeWH();
+            },
+            tabChange: function (id) {
+                element.tabChange('contentnav', id);
+            },
+            tabDelete: function (id) {
+                element.tabDelete('contentnav', id);
+            },
+            tabDeleteAll: function (ids) {
+                $.each(ids, function (index, item) {
+                    element.tabDelete('contentnav', item);
+                });
+            }
+        };
+        //$(".site-url").on('click', function () {
+        $(document).on('click', '.site-url', function() {
+            var nav = $(this);
+            var length = $("ul.layui-tab-title li").length;
+            if (length <= 0) {
+                active.tabAdd(nav.attr("data-url"), nav.attr("data-id"), nav.attr("data-title"));
+            } else {
+                var isData = false;
+                $.each($("ul.layui-tab-title li"), function () {
+                    if ($(this).attr("lay-id") == nav.attr("data-id")) {
+                        isData = true;
+                    }
+                });
+                if (isData == false) {
+                    active.tabAdd(nav.attr("data-url"), nav.attr("data-id"), nav.attr("data-title"));
+                }
+                active.tabChange(nav.attr("data-id"));
+            }
+        });
+
+        function rightMenu() {
+            //右击弹出
+            $(".layui-tab-title li").on('contextmenu', function (e) {
+                var menu = $(".rightmenu");
+                menu.find("li").attr('data-id', $(this).attr("lay-id"));
+                l = e.clientX;
+                t = e.clientY;
+                menu.css({
+                    left: l,
+                    top: t
+                }).show();
+                return false;
+            });
+            //左键点击隐藏
+            $("body,.layui-tab-title li").click(function () {
+                $(".rightmenu").hide();
+            });
+        }
+
+        $(document).on('click', '.rightmenu li', function() {
+        // $(".rightmenu li").click(function () {
+            if ($(this).attr("data-type") == "closethis") {
+                active.tabDelete($(this).attr("data-id"));
+            } else if ($(this).attr("data-type") == "closeall") {
+                var tabtitle = $(".layui-tab-title li");
+                var ids = new Array();
+                tabtitle.each(function (i) {
+                    ids.push($(this).attr("lay-id"));
+                });
+                //如果关闭所有 ，即将所有的lay-id放进数组，执行tabDeleteAll
+                active.tabDeleteAll(ids);
+            }
+            $('.rightmenu').hide(); //最后再隐藏右键菜单
+        });
+
+        function iframeWH() {
+            var H = $(window).height() - 120;
+            $("iframe").css("height", H + "px");
+        }
+
+        $(window).resize(function () {
+            iframeWH();
+        });
+    });
+</script>
+</body>
+</html>

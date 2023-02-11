@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hp.mapper.DepartmentMapper">
+
+    <resultMap type="cn.hp.entity.Department" id="DepartmentResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="address" column="address"/>
+        <result property="type" column="type"/>
+        <result property="typeName" column="typeName"/>
+        <result property="createDatetime" column="create_datetime"/>
+
+    </resultMap>
+
+    <sql id="selectDepartmentVo">
+        select * from department
+    </sql>
+
+    <select id="selectDepartmentList" parameterType="Department" resultMap="DepartmentResult">
+        select d.*,d2.`name` typeName from department d left join dite d2 on d.type=d2.id
+        <!-- 根据搜索字段根据模板进行填添加 -->
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectDepartmentById" parameterType="Integer" resultMap="DepartmentResult">
+        <include refid="selectDepartmentVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertDepartment" parameterType="cn.hp.entity.Department" useGeneratedKeys="true" keyProperty="id">
+        <!-- 根据表字段进行自己添加 -->
+
+        insert into department
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="address != null and address != ''">address,</if>
+            <if test="type != null">type,</if>
+            <if test="createDatetime != null and createDatetime != ''">create_datetime,</if>
+
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="address != null and address != ''">#{address},</if>
+            <if test="type != null">#{type},</if>
+            <if test="createDatetime != null and createDatetime != ''">#{createDatetime},</if>
+
+        </trim>
+
+    </insert>
+
+    <update id="updateDepartment" parameterType="cn.hp.entity.Department">
+       <!-- 根据表字段进行自己添加 -->
+
+       update department
+         <trim prefix="SET" suffixOverrides=",">
+            <if test="id != null ">id=#{id},</if>
+            <if test="name != null and name != ''">name=#{name},</if>
+            <if test="address != null and address != ''">address=#{address},</if>
+            <if test="type != null ">type=#{type},</if>
+            <if test="createDatetime != null and createDatetime != ''">create_datetime=#{createDatetime},</if>
+
+        </trim>
+       where id = #{id}
+    </update>
+
+    <delete id="deleteDepartmentById" parameterType="Integer">
+        delete from department where id = #{id}
+    </delete>
+
+</mapper>

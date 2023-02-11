@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hp.mapper.MenuMapper">
+
+    <resultMap type="cn.hp.entity.Menu" id="MenuResult">
+        <result property="id" column="id"/>
+        <result property="menuId" column="menu_id"/>
+        <result property="menuName" column="menu_name"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="url" column="url"/>
+        <result property="target" column="target"/>
+        <result property="menuType" column="menu_type"/>
+        <result property="visible" column="visible"/>
+        <result property="isRefresh" column="is_refresh"/>
+        <result property="perms" column="perms"/>
+        <result property="icon" column="icon"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectMenuVo">
+        select * from menu
+    </sql>
+    <select id="selectMenuList" parameterType="cn.hp.entity.Menu" resultMap="MenuResult">
+        <include refid="selectMenuVo"/>
+        <where>
+            menu_type in('M','C') and visible = 0
+            <if test="parentId != null  and parentId != ''"> and parent_id = #{parentId}</if>
+        </where>
+    </select>
+    <select id="getMenu" parameterType="cn.hp.entity.Menu" resultMap="MenuResult">
+        select m.* from menu m
+        left join role_menu rm on m.menu_id=rm.menu_id
+        where menu_type in('M','C') and visible = 0 and rm.role_id={roleId}
+    </select>
+    <select id="selectMenuPageList" parameterType="cn.hp.entity.Menu" resultMap="MenuResult">
+        <!--<include refid="selectMenuVo"/>-->
+        select m.* from ((select m.menu_id id,m.* from menu m where menu_type='M')
+        union
+        (select m.parent_id id,m.* from menu m where menu_type='C')
+        order by id desc,menu_id,order_num) m
+        <where>
+            <if test="menuType != null  and menuType != ''"> and menu_type = #{menuType}</if>
+            <if test="menuName != null  and menuName != ''"> and menu_name like concat('%', #{menuName}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectMenuById" parameterType="Integer" resultMap="MenuResult">
+        <include refid="selectMenuVo"/>
+        where menu_id= #{menuId}
+    </select>
+
+    <insert id="insertMenu" parameterType="cn.hp.entity.Menu" useGeneratedKeys="true" keyProperty="id">
+        <!-- 根据表字段进行自己添加 -->
+        insert into menu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="menuId != null">menu_id,</if>
+            <if test="menuName != null and menuName != ''">menu_name,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="url != null and url != ''">url,</if>
+            <if test="target != null and target != ''">target,</if>
+            <if test="menuType != null">menu_type,</if>
+            <if test="visible != null">visible,</if>
+            <if test="isRefresh != null">is_refresh,</if>
+            <if test="perms != null and perms != ''">perms,</if>
+            <if test="icon != null and icon != ''">icon,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="menuId != null">#{menuId},</if>
+            <if test="menuName != null and menuName != ''">#{menuName},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="url != null and url != ''">#{url},</if>
+            <if test="target != null and target != ''">#{target},</if>
+            <if test="menuType != null">#{menuType},</if>
+            <if test="visible != null">#{visible},</if>
+            <if test="isRefresh != null">#{isRefresh},</if>
+            <if test="perms != null and perms != ''">#{perms},</if>
+            <if test="icon != null and icon != ''">#{icon},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMenu" parameterType="cn.hp.entity.Menu">
+       update menu
+         <trim prefix="SET" suffixOverrides=",">
+            <if test="menuName != null and menuName != ''">menu_name=#{menuName},</if>
+            <if test="parentId != null ">parent_id=#{parentId},</if>
+            <if test="orderNum != null ">order_num=#{orderNum},</if>
+            <if test="url != null and url != ''">url=#{url},</if>
+            <if test="target != null and target != ''">target=#{target},</if>
+            <if test="menuType != null ">menu_type=#{menuType},</if>
+            <if test="visible != null ">visible=#{visible},</if>
+            <if test="isRefresh != null ">is_refresh=#{isRefresh},</if>
+            <if test="perms != null and perms != ''">perms=#{perms},</if>
+            <if test="icon != null and icon != ''">icon=#{icon},</if>
+            <if test="createBy != null and createBy != ''">create_by=#{createBy},</if>
+            <if test="createTime != null ">create_time=#{createTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by=#{updateBy},</if>
+            <if test="updateTime != null ">update_time=#{updateTime},</if>
+            <if test="remark != null and remark != ''">remark=#{remark},</if>
+
+        </trim>
+       where menu_id= #{menuId}
+    </update>
+
+    <delete id="deleteMenuById" parameterType="Integer">
+        delete from menu where menu_id= #{menuId}
+    </delete>
+
+</mapper>

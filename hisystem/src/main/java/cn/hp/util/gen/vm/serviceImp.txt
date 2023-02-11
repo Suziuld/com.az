@@ -1,0 +1,90 @@
+package ${packages}.service.imp;
+
+import java.util.List;
+
+import cn.hutool.core.convert.Convert;
+import ${packages}.entity.${tableName};
+import ${packages}.mapper.${tableName}Mapper;
+import ${packages}.service.I${tableName}Service;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+
+/**
+ * ${remark}Service业务层处理
+ */
+@Service
+public class ${tableName}ServiceImp implements I${tableName}Service
+{
+    @Resource
+    private ${tableName}Mapper ${tableName2}Mapper;
+
+    /**
+     * 查询${remark}
+     * @param id ${remark}ID
+     * @return ${remark}
+     */
+    @Override
+    public ${tableName} select${tableName}ById(Integer id)
+    {
+        return ${tableName2}Mapper.select${tableName}ById(id);
+    }
+
+    /**
+     * 分页查询${remark}列表
+     * @param ${tableName2} ${remark}
+     * @return ${remark}
+     */
+    @Override
+    public PageInfo<${tableName}> select${tableName}List(${tableName} ${tableName2}, Integer page, Integer limit)
+    {
+        PageHelper.startPage(page,limit);
+        List<${tableName}> list = ${tableName2}Mapper.select${tableName}List(${tableName2});
+        return new PageInfo<${tableName}>(list);
+    }
+
+    /**
+     * 查询${remark}列表
+     * @param ${tableName2} ${remark}
+     * @return ${remark}
+     */
+    @Override
+    public List<${tableName}> select${tableName}List(${tableName} ${tableName2})
+    {
+        return ${tableName2}Mapper.select${tableName}List(${tableName2});
+    }
+
+    /**
+     * 新增${remark}
+     * @param ${tableName2} ${remark}
+     * @return 结果
+     */
+    @Override
+    public int insert${tableName}(${tableName} ${tableName2})
+    {
+        return ${tableName2}Mapper.insert${tableName}(${tableName2});
+    }
+
+    /**
+     * 修改${remark}
+     * @param ${tableName2} ${remark}
+     * @return 结果
+     */
+    @Override
+    public int update${tableName}(${tableName} ${tableName2})
+    {
+        return ${tableName2}Mapper.update${tableName}(${tableName2});
+    }
+
+    /**
+     * 删除${remark}信息
+     * @param id ${remark}ID
+     * @return 结果
+     */
+    @Override
+    public int delete${tableName}ById(Integer id)
+    {
+        return ${tableName2}Mapper.delete${tableName}ById(id);
+    }
+}

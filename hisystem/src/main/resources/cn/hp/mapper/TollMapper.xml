@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hp.mapper.TollMapper">
+
+    <resultMap type="cn.hp.entity.Toll" id="TollResult">
+        <result property="id" column="id"/>
+        <result property="createDatetime" column="create_datetime"/>
+
+    </resultMap>
+
+    <sql id="selectTollVo">
+        select * from toll
+    </sql>
+
+    <select id="selectTollList" parameterType="cn.hp.entity.Toll" resultMap="TollResult">
+        <include refid="selectTollVo"/>
+        <!-- 根据搜索字段根据模板进行填添加 -->
+        <!--
+        <where>
+            <if test="userNo != null  and userNo != ''"> and userNo = #{userNo}</if>
+            <if test="doctorname != null  and doctorname != ''"> and doctorname like concat('%', #{doctorname}, '%')</if>
+        </where>
+        -->
+    </select>
+
+    <select id="selectTollById" parameterType="Integer" resultMap="TollResult">
+        <include refid="selectTollVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertToll" parameterType="cn.hp.entity.Toll" useGeneratedKeys="true" keyProperty="id">
+        <!-- 根据表字段进行自己添加 -->
+
+        insert into toll
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="createDatetime != null">create_datetime,</if>
+
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="createDatetime != null">#{createDatetime},</if>
+
+        </trim>
+
+    </insert>
+
+    <update id="updateToll" parameterType="cn.hp.entity.Toll">
+       <!-- 根据表字段进行自己添加 -->
+
+       update toll
+         <trim prefix="SET" suffixOverrides=",">
+            <if test="id != null ">id=#{id},</if>
+            <if test="createDatetime != null ">create_datetime=#{createDatetime},</if>
+
+        </trim>
+       where id = #{id}
+    </update>
+
+    <delete id="deleteTollById" parameterType="Integer">
+        delete from toll where id = #{id}
+    </delete>
+
+</mapper>
