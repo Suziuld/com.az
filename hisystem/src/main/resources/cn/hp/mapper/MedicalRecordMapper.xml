@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hp.mapper.MedicalRecordMapper">
+
+    <resultMap type="cn.hp.entity.MedicalRecord" id="MedicalRecordResult">
+        <result property="id" column="id"/>
+        <result property="prescriptionNum" column="prescription_num"/>
+        <result property="prescription" column="prescription"/>
+        <result property="drugIds" column="drugIds"/>
+        <result property="conditionDescription" column="condition_description"/>
+        <result property="diagnosisResult" column="diagnosis_result"/>
+        <result property="medicalOrder" column="medical_order"/>
+        <result property="money" column="money"/>
+        <result property="registerId" column="register_id"/>
+        <result property="createDatetime" column="create_datetime"/>
+        <result property="remark" column="remark"/>
+        <result property="takingDrugStatus" column="takingDrugStatus"/>
+        <result property="cardId" column="card_id"/>
+
+    </resultMap>
+
+    <sql id="selectMedicalRecordVo">
+        select * from medical_record
+    </sql>
+
+    <select id="selectMedicalRecordList" parameterType="cn.hp.entity.MedicalRecord" resultMap="MedicalRecordResult">
+        select mr.*,oq.remark,ifnull(t.taking_drug_status,-1) takingDrugStatus,p.card_id from medical_record mr
+        left join outpatient_queue oq on mr.register_id=oq.register_id
+        left join patient p on oq.patient_id=p.id
+        left join toll_takedrug t on mr.prescription_num=t.prescription_num
+        <!-- 根据搜索字段根据模板进行填添加-->
+        <where>
+            <if test="name != null  and name != ''"> and oq.remark like concat('%', #{name}, '%')</if>
+        </where>
+        order by mr.create_datetime desc
+    </select>
+
+    <select id="selectMedicalRecordById" parameterType="Integer" resultMap="MedicalRecordResult">
+        <include refid="selectMedicalRecordVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectMedicalRecordByRegisterId" parameterType="Integer" resultMap="MedicalRecordResult">
+        <include refid="selectMedicalRecordVo"/>
+        where register_id = #{registerId}
+    </select>
+    <select id="selectMedicalRecordByPrescriptionNum" parameterType="String" resultMap="MedicalRecordResult">
+        <include refid="selectMedicalRecordVo"/>
+        where prescription_num = #{prescriptionNum}
+    </select>
+    <insert id="insertMedicalRecord" parameterType="cn.hp.entity.MedicalRecord" useGeneratedKeys="true" keyProperty="id">
+        <!-- 根据表字段进行自己添加 -->
+        insert into medical_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="prescriptionNum != null and prescriptionNum != ''">prescription_num,</if>
+            <if test="prescription != null">prescription,</if>
+            <if test="drugIds != null">drugIds,</if>
+            <if test="conditionDescription != null and conditionDescription != ''">condition_description,</if>
+            <if test="diagnosisResult != null and diagnosisResult != ''">diagnosis_result,</if>
+            <if test="medicalOrder != null and medicalOrder != ''">medical_order,</if>
+            <if test="money != null">money,</if>
+            <if test="registerId != null">register_id,</if>
+            <if test="createDatetime != null">create_datetime,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="prescriptionNum != null and prescriptionNum != ''">#{prescriptionNum},</if>
+            <if test="prescription != null">#{prescription},</if>
+            <if test="drugIds != null">#{drugIds},</if>
+            <if test="conditionDescription != null and conditionDescription != ''">#{conditionDescription},</if>
+            <if test="diagnosisResult != null and diagnosisResult != ''">#{diagnosisResult},</if>
+            <if test="medicalOrder != null and medicalOrder != ''">#{medicalOrder},</if>
+            <if test="money != null">#{money},</if>
+            <if test="registerId != null">#{registerId},</if>
+            <if test="createDatetime != null">#{createDatetime},</if>
+
+        </trim>
+
+    </insert>
+
+    <update id="updateMedicalRecord" parameterType="cn.hp.entity.MedicalRecord">
+       <!-- 根据表字段进行自己添加 -->
+
+       update medical_record
+         <trim prefix="SET" suffixOverrides=",">
+            <if test="prescriptionNum != null and prescriptionNum != ''">prescription_num=#{prescriptionNum},</if>
+            <if test="prescription != null ">prescription=#{prescription},</if>
+             <if test="drugIds != null">drugIds=#{drugIds},</if>
+            <if test="conditionDescription != null and conditionDescription != ''">condition_description=#{conditionDescription},</if>
+            <if test="diagnosisResult != null and diagnosisResult != ''">diagnosis_result=#{diagnosisResult},</if>
+            <if test="medicalOrder != null and medicalOrder != ''">medical_order=#{medicalOrder},</if>
+            <if test="money != null ">money=#{money},</if>
+            <if test="registerId != null ">register_id=#{registerId},</if>
+            <if test="createDatetime != null ">create_datetime=#{createDatetime},</if>
+
+        </trim>
+       where id = #{id}
+    </update>
+    <update id="updateMedicalRecordByPrescriptionNum" parameterType="cn.hp.entity.MedicalRecord">
+        <!-- 根据表字段进行自己添加 -->
+        update medical_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="drugIds != null">drugIds=#{drugIds},</if>
+            <if test="prescription != null ">prescription=#{prescription},</if>
+            <if test="conditionDescription != null and conditionDescription != ''">condition_description=#{conditionDescription},</if>
+            <if test="diagnosisResult != null and diagnosisResult != ''">diagnosis_result=#{diagnosisResult},</if>
+            <if test="medicalOrder != null and medicalOrder != ''">medical_order=#{medicalOrder},</if>
+            <if test="money != null ">money=#{money},</if>
+            <if test="registerId != null ">register_id=#{registerId},</if>
+            <if test="createDatetime != null ">create_datetime=#{createDatetime},</if>
+        </trim>
+        where prescription_num=#{prescriptionNum}
+
+    </update>
+
+    <delete id="deleteMedicalRecordById" parameterType="Integer">
+        delete from medical_record where id = #{id}
+    </delete>
+
+</mapper>

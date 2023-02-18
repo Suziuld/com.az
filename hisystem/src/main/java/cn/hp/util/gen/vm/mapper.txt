@@ -1,0 +1,53 @@
+package ${packages}.mapper;
+
+import ${packages}.entity.${tableName};
+import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
+
+/**
+ * ${remark}Mapper接口
+ *
+ */
+//@Mapper
+public interface ${tableName}Mapper
+{
+    /**
+     * 查询${remark}
+     *
+     * @param id ${remark}ID
+     * @return ${remark}
+     */
+    public ${tableName} select${tableName}ById(Integer id);
+
+    /**
+     * 查询${remark}列表
+     *
+     * @param ${tableName2} ${remark}
+     * @return ${remark}集合
+     */
+    public List<${tableName}> select${tableName}List(${tableName} ${tableName2});
+
+    /**
+     * 新增${remark}
+     *
+     * @param ${tableName2} ${remark}
+     * @return 结果
+     */
+    public int insert${tableName}(${tableName} ${tableName2});
+
+    /**
+     * 修改${remark}
+     *
+     * @param ${tableName2} ${remark}
+     * @return 结果
+     */
+    public int update${tableName}(${tableName} ${tableName2});
+
+    /**
+     * 删除${remark}
+     * @param id ID
+     * @return 结果
+     */
+    public int delete${tableName}ById(Integer id);
+
+}

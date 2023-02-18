@@ -1,0 +1,79 @@
+package ${packages}.util;
+
+import com.github.pagehelper.PageInfo;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+
+/**
+ * 返回json数据
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Accessors(chain = true)
+public class Result {
+    private Integer code;   //状态码 , 200代表成功; 5000代表失败
+    private long total;   //返回数据的总长度
+    private Object data;    //返回的数据
+    private String msg;     //当前json信息描述
+
+    /**
+     * 操作成功,没有数据返回,携带自定义描述信息
+     */
+    public static Result success(String msg) {
+        return new Result().setCode(200).setMsg(msg);
+    }
+
+    /**
+     * 操作成功,有数据返回,携带自定义描述信息
+     */
+    public static Result success(Object data, String msg) {
+        return new Result().setCode(200).setMsg(msg).setData(data);
+    }
+
+    /**
+     * 接口请求成功,有数据返回
+     */
+    public static Result success(Object data) {
+        return new Result().setCode(200).setData(data);
+    }
+
+    /**
+     * 分页查询接口请求成功,有数据返回
+     */
+    public static Result success(PageInfo data) {
+        return new Result(200, data.getTotal(), data.getList(), null);
+    }
+
+    /**
+     * 请求成功
+     */
+    public static Result success() {
+        return new Result().setCode(200);
+    }
+
+    /**
+     * 操作失败,携带自定义状态码和描述信息
+     */
+    public static Result error(Integer code, String msg) {
+        return new Result().setCode(code).setMsg(msg);
+    }
+
+    /**
+     * 操作失败,没有数据,携带自定义描述信息
+     */
+    public static Result error(String msg) {
+        return new Result().setCode(5000).setMsg(msg);
+    }
+
+
+    /**
+     * 操作失败
+     */
+    public static Result error() {
+        return new Result().setCode(5000);
+    }
+
+}

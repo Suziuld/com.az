@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hp.mapper.GooutMapper">
+
+    <resultMap type="cn.hp.entity.Goout" id="GooutResult">
+        <result property="id" column="id"/>
+        <result property="drugId" column="drug_id"/>
+        <result property="drugName" column="drug_name"/>
+        <result property="drugNum" column="drug_num"/>
+        <result property="moner" column="moner"/>
+        <result property="tolltakedrugNo" column="tolltakedrug_no"/>
+        <result property="patientId" column="patient_id"/>
+        <result property="createTime" column="create_time"/>
+
+    </resultMap>
+
+    <sql id="selectGooutVo">
+        select * from goout
+    </sql>
+
+    <select id="selectGooutList" parameterType="cn.hp.entity.Goout" resultMap="GooutResult">
+        <include refid="selectGooutVo"/>
+        <!-- 根据搜索字段根据模板进行填添加 -->
+        <!--
+        <where>
+            <if test="userNo != null  and userNo != ''"> and userNo = #{userNo}</if>
+            <if test="doctorname != null  and doctorname != ''"> and doctorname like concat('%', #{doctorname}, '%')</if>
+        </where>
+        -->
+    </select>
+
+    <select id="selectGooutById" parameterType="Integer" resultMap="GooutResult">
+        <include refid="selectGooutVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertGoout" parameterType="cn.hp.entity.Goout" useGeneratedKeys="true" keyProperty="id">
+        <!-- 根据表字段进行自己添加 -->
+
+        insert into goout
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="drugId != null">drug_id,</if>
+            <if test="drugName != null and drugName != ''">drug_name,</if>
+            <if test="drugNum != null">drug_num,</if>
+            <if test="moner != null and moner != ''">moner,</if>
+            <if test="tolltakedrugNo != null">tolltakedrug_no,</if>
+            <if test="patientId != null and patientId != ''">patient_id,</if>
+            <if test="createTime != null">create_time,</if>
+
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="drugId != null">#{drugId},</if>
+            <if test="drugName != null and drugName != ''">#{drugName},</if>
+            <if test="drugNum != null">#{drugNum},</if>
+            <if test="moner != null and moner != ''">#{moner},</if>
+            <if test="tolltakedrugNo != null">#{tolltakedrugNo},</if>
+            <if test="patientId != null and patientId != ''">#{patientId},</if>
+            <if test="createTime != null">#{createTime},</if>
+
+        </trim>
+
+    </insert>
+
+    <update id="updateGoout" parameterType="cn.hp.entity.Goout">
+       <!-- 根据表字段进行自己添加 -->
+
+       update goout
+         <trim prefix="SET" suffixOverrides=",">
+            <if test="id != null ">id=#{id},</if>
+            <if test="drugId != null ">drug_id=#{drugId},</if>
+            <if test="drugName != null and drugName != ''">drug_name=#{drugName},</if>
+            <if test="drugNum != null ">drug_num=#{drugNum},</if>
+            <if test="moner != null and moner != ''">moner=#{moner},</if>
+            <if test="tolltakedrugNo != null ">tolltakedrug_no=#{tolltakedrugNo},</if>
+            <if test="patientId != null and patientId != ''">patient_id=#{patientId},</if>
+            <if test="createTime != null ">create_time=#{createTime},</if>
+
+        </trim>
+       where id = #{id}
+    </update>
+
+    <delete id="deleteGooutById" parameterType="Integer">
+        delete from goout where id = #{id}
+    </delete>
+
+</mapper>

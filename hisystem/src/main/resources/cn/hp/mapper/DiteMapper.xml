@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hp.mapper.DiteMapper">
+
+    <resultMap type="cn.hp.entity.Dite" id="DiteResult">
+        <result property="id" column="id"/>
+        <result property="typeNo" column="typeNo"/>
+        <result property="hierarchy" column="hierarchy"/>
+        <result property="name" column="name"/>
+        <result property="remark" column="remark"/>
+        <result property="flog" column="flog"/>
+
+    </resultMap>
+
+    <sql id="selectDiteVo">
+        select *
+        from dite
+    </sql>
+
+    <select id="selectDiteList" parameterType="cn.hp.entity.Dite" resultMap="DiteResult">
+        select d.*,dy.`name` typeName from dite d left join dicttype dy on d.typeNo=dy.typeNo
+        <!-- 根据搜索字段根据模板进行填添加 -->
+        <where>
+            d.flog=1 and dy.flog=1
+            <if test="typeNo != null  and typeNo != ''">and d.typeNo = #{typeNo}</if>
+            <if test="id != null  and id != ''">and d.id = #{id}</if>
+        </where>
+        order by hierarchy desc
+    </select>
+
+    <select id="selectDiteById" parameterType="Integer" resultMap="DiteResult">
+        <include refid="selectDiteVo"/>
+        where flog=1 and id = #{id}
+    </select>
+
+    <insert id="insertDite" parameterType="cn.hp.entity.Dite" useGeneratedKeys="true" keyProperty="id">
+        <!-- 根据表字段进行自己添加 -->
+
+        insert into dite
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="typeNo != null and typeNo != ''">typeNo,</if>
+            <if test="hierarchy != null">hierarchy,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            <if test="flog != null">flog,</if>
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="typeNo != null and typeNo != ''">#{typeNo},</if>
+            <if test="hierarchy != null">#{hierarchy},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            <if test="flog != null">#{flog},</if>
+
+        </trim>
+
+    </insert>
+
+    <update id="updateDite" parameterType="cn.hp.entity.Dite">
+        <!-- 根据表字段进行自己添加 -->
+
+        update dite
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="id != null ">id=#{id},</if>
+            <if test="typeNo != null and typeNo != ''">typeNo=#{typeNo},</if>
+            <if test="hierarchy != null ">hierarchy=#{hierarchy},</if>
+            <if test="name != null and name != ''">name=#{name},</if>
+            <if test="remark != null and remark != ''">remark=#{remark},</if>
+            <if test="flog != null ">flog=#{flog},</if>
+
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDiteById" parameterType="Integer">
+        delete
+        from dite
+        where id = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hp.mapper.IdcardMapper">
+
+    <resultMap type="cn.hp.entity.Idcard" id="IdcardResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="sex" column="sex"/>
+        <result property="nationality" column="nationality"/>
+        <result property="idCard" column="id_card"/>
+        <result property="address" column="address"/>
+        <result property="birthday" column="birthday"/>
+
+    </resultMap>
+
+    <sql id="selectIdcardVo">
+        select * from idcard
+    </sql>
+
+    <select id="selectIdcardList" parameterType="cn.hp.entity.Idcard" resultMap="IdcardResult">
+        <include refid="selectIdcardVo"/>
+        <!-- 根据搜索字段根据模板进行填添加 -->
+        <!--
+        <where>
+            <if test="userNo != null  and userNo != ''"> and userNo = #{userNo}</if>
+            <if test="doctorname != null  and doctorname != ''"> and doctorname like concat('%', #{doctorname}, '%')</if>
+        </where>
+        -->
+    </select>
+
+    <select id="selectIdcardById" parameterType="Integer" resultMap="IdcardResult">
+        <include refid="selectIdcardVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertIdcard" parameterType="cn.hp.entity.Idcard" useGeneratedKeys="true" keyProperty="id">
+        insert into idcard
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="sex != null and sex != ''">sex,</if>
+            <if test="nationality != null and nationality != ''">nationality,</if>
+            <if test="idCard != null and idCard != ''">id_card,</if>
+            <if test="address != null and address != ''">address,</if>
+            <if test="birthday != null and birthday != ''">birthday,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="sex != null and sex != ''">#{sex},</if>
+            <if test="nationality != null and nationality != ''">#{nationality},</if>
+            <if test="idCard != null and idCard != ''">#{idCard},</if>
+            <if test="address != null and address != ''">#{address},</if>
+            <if test="birthday != null and birthday != ''">#{birthday},</if>
+        </trim>
+    </insert>
+
+    <update id="updateIdcard" parameterType="cn.hp.entity.Idcard">
+       <!-- 根据表字段进行自己添加 -->
+
+       update idcard
+         <trim prefix="SET" suffixOverrides=",">
+            <if test="id != null ">id=#{id},</if>
+            <if test="name != null and name != ''">name=#{name},</if>
+            <if test="sex != null and sex != ''">sex=#{sex},</if>
+            <if test="nationality != null and nationality != ''">nationality=#{nationality},</if>
+            <if test="idCard != null and idCard != ''">id_card=#{idCard},</if>
+            <if test="address != null and address != ''">address=#{address},</if>
+            <if test="birthday != null and birthday != ''">birthday=#{birthday},</if>
+
+        </trim>
+       where id = #{id}
+    </update>
+
+    <delete id="deleteIdcardById" parameterType="Integer">
+        delete from idcard where id = #{id}
+    </delete>
+
+</mapper>
