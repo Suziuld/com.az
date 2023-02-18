@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+	 	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.2.xsd">
+    <!-- 配置扫描包 -->
+    <context:component-scan base-package="com.ajax.controller">
+        <!-- 配置扫描 包含Controller 注解的类,相当于是配置了扫描的白名单-->
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!--配置视图解释器，进行页面的跳转-->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!--跳转的页面的路径-->
+<!--        <property name="prefix" value="/WEB-INF"/>-->
+        <!--跳转的页面的后缀名称-->
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!-- 启动 mvc 注解驱动 -->
+    <mvc:annotation-driven/>
+    <!-- 静态资源处理 -->
+    <mvc:default-servlet-handler/>
+<mvc:interceptors>
+
+
+    <mvc:interceptor>
+        <mvc:mapping path="/goods"/>
+        <mvc:exclude-mapping path="/**"/>
+        <mvc:exclude-mapping path="/login2.jsp"/>
+        <bean class="com.ajax.interceptor.MyInterceptor"/>
+    </mvc:interceptor>
+</mvc:interceptors>
+
+</beans>
+

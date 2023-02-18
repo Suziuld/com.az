@@ -1,0 +1,12 @@
+com\ajax\mapper\UserInfoMapper.class
+com\ajax\entity\Goodsinfo.class
+com\ajax\interceptor\MyInterceptor.class
+com\ajax\service\GoodsService.class
+com\ajax\service\UserInfoService.class
+com\ajax\entity\Userinfo.class
+com\ajax\service\GoodsServiceImp.class
+com\ajax\utils\Result.class
+com\ajax\controller\GoodsController.class
+com\ajax\service\UserInfoServiceImp.class
+com\ajax\controller\UserInfoController.class
+com\ajax\mapper\GoodsMapper.class

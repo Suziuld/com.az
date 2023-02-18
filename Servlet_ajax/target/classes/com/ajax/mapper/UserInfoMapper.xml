@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ajax.mapper.UserInfoMapper">
+
+    <select id="findUser" resultType="com.ajax.entity.Userinfo">
+        select username ,pwd,userphone from userinfo
+        <where>
+            <if test="username !=null and username !=''">and username=#{username}</if>
+            <if test="pwd !=null and pwd !=''">and pwd=#{pwd}</if>
+        </where>
+        limit 1
+    </select>
+</mapper>

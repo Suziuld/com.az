@@ -1,0 +1,16 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/az?useUnicode=true&amp;characterEncoding=utf-8
+    type: org.springframework.jdbc.datasource.DriverManagerDataSource
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    password: root
+mybatis:
+  mapper-locations: classpath:/com/az/redisaz/mapper/*.xml
